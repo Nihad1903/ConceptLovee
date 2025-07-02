@@ -3,3 +3,4 @@ whitenoise
 gunicorn
 python-dotenv
 python-decouple
+pymysql
