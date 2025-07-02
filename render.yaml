@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: conceptlovecore
+    env: python
+    plan: free
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: "gunicorn conceptlovecore.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: conceptlovecore.settings
+      - key: SECRET_KEY
+        value: django-insecure-i=opkhqkp5426j5%50t^s$ugtb^qn)pw3tw9araxgm&!acytgw
+      - key: DEBUG
+        value: false
