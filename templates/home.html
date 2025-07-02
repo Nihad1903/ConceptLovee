@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <style>
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a0033 50%, #000000 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        /* Gündüz modu */
+        body.day-mode {
+            background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 50%, #B0E0E6 100%);
+        }
+
+        /* Tema dəyişdirici düyməsi */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #ff1493;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 100;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #ff1493;
+        }
+
+        /* Ay və günəş ikonları */
+        .moon-icon, .sun-icon {
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        .sun-icon {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        body.day-mode .sun-icon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        body.day-mode .moon-icon {
+            opacity: 0;
+            transform: rotate(-180deg);
+        }
+
+        /* Arxa plan elementləri */
+        .bg-celestial {
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.1;
+            animation: celestial-float 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .bg-moon {
+            top: 10%;
+            right: 15%;
+            opacity: 0.2;
+        }
+
+        .bg-sun {
+            top: 10%;
+            right: 15%;
+            opacity: 0;
+            transform: rotate(0deg);
+        }
+
+        body.day-mode .bg-sun {
+            opacity: 0.3;
+            animation: sun-rotate 20s linear infinite;
+        }
+
+        body.day-mode .bg-moon {
+            opacity: 0;
+        }
+
+        @keyframes celestial-float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes sun-rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hərəkət edən ürəklər */
+        .heart {
+            position: absolute;
+            color: #ff1493;
+            font-size: 20px;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.8;
+            text-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493, 0 0 30px #ff1493;
+        }
+
+        .heart:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .heart:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .heart:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .heart:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .heart:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .heart:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .heart:nth-child(7) { left: 70%; animation-delay: 0.5s; }
+        .heart:nth-child(8) { left: 80%; animation-delay: 1.5s; }
+        .heart:nth-child(9) { left: 90%; animation-delay: 2.5s; }
+        .heart:nth-child(10) { left: 15%; animation-delay: 3.5s; }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10%, 90% {
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Ana konteyner */
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff1493;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 
+                0 0 20px #ff1493,
+                0 0 40px rgba(255, 20, 147, 0.3),
+                inset 0 0 20px rgba(255, 20, 147, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+            animation: glow 2s ease-in-out infinite alternate;
+            transition: all 0.5s ease;
+        }
+
+        /* Gündüz modu konteyner */
+        body.day-mode .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ff69b4;
+            color: #333;
+            box-shadow: 
+                0 0 20px rgba(255, 105, 180, 0.5),
+                0 0 40px rgba(255, 105, 180, 0.2),
+                inset 0 0 20px rgba(255, 105, 180, 0.1);
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 
+                    0 0 20px #ff1493,
+                    0 0 40px rgba(255, 20, 147, 0.3),
+                    inset 0 0 20px rgba(255, 20, 147, 0.1);
+            }
+            to {
+                box-shadow: 
+                    0 0 30px #ff1493,
+                    0 0 60px rgba(255, 20, 147, 0.5),
+                    inset 0 0 30px rgba(255, 20, 147, 0.2);
+            }
+        }
+
+        /* Başlıq */
+        .title {
+            color: #ff1493;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        /* Gündüz modu başlıq */
+        body.day-mode .title {
+            color: #333;
+            text-shadow: 0 0 10px rgba(51, 51, 51, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Form elementləri */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff1493;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 20, 147, 0.7);
+        }
+
+        /* Gündüz modu input */
+        body.day-mode .input-field {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border: 2px solid #ff69b4;
+        }
+
+        body.day-mode .input-field::placeholder {
+            color: rgba(255, 105, 180, 0.8);
+        }
+
+        .input-field:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px #ff1493, 0 0 25px rgba(255, 20, 147, 0.3);
+            transform: scale(1.02);
+        }
+
+        /* Giriş düyməsi */
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+            border: none;
+            border-radius: 50px;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.4);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.6);
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+        }
+
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Dekorativ elementlər */
+        .heart-icon {
+            font-size: 30px;
+            color: #ff1493;
+            margin-bottom: 10px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Mobil responsivlik */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+                max-width: 350px;
+            }
+
+            .title {
+                font-size: 20px;
+                margin-bottom: 25px;
+            }
+
+            .input-field {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+
+            .login-btn {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .heart {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .login-container {
+                padding: 25px 15px;
+            }
+
+            .title {
+                font-size: 18px;
+            }
+
+            .input-field {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .login-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        /* Arxa plan efektləri */
+        .bg-effect {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ff1493;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 10px #ff1493;
+            }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xüsusi Giriş</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Tema dəyişdirici düyməsi -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span class="moon-icon">🌙</span>
+        <span class="sun-icon">☀️</span>
+    </div>
+
+    <!-- Arxa plan səma elementləri -->
+    <div class="bg-celestial bg-moon">🌙</div>
+    <div class="bg-celestial bg-sun">☀️</div>
+
+    <!-- Hərəkət edən ürəklər -->
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💗</div>
+    <div class="heart">💓</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💗</div>
+    <div class="heart">💓</div>
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+
+    <div class="login-container">
+        <div class="heart-icon">💖</div>
+        <h1 class="title">Xüsusi olaraq sənin üçün hazırlanıb</h1>
+        
+        <form method="post", action="{% url 'home' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input name="code" type="text" class="input-field" placeholder="Parolu daxil edin" required>
+            </div>
+            <button type="submit" class="login-btn">Gir</button>
+        </form>
+    </div>
+
+    <script>
+        // Tema dəyişdirici funksiya
+        function toggleTheme() {
+            document.body.classList.toggle('day-mode');
+            
+            // Tema vəziyyətini yadda saxla (optional)
+            const isDayMode = document.body.classList.contains('day-mode');
+            // localStorage yoxdur, amma bu funksiya işləyəcək
+        }
+
+        // Əlavə arxa plan efektləri
+        function createBgEffects() {
+            for (let i = 0; i < 50; i++) {
+                const effect = document.createElement('div');
+                effect.className = 'bg-effect';
+                effect.style.left = Math.random() * 100 + '%';
+                effect.style.top = Math.random() * 100 + '%';
+                effect.style.animationDelay = Math.random() * 3 + 's';
+                document.body.appendChild(effect);
+            }
+        }
+
+        createBgEffects();
+
+        // Input focus efektləri
+        const inputs = document.querySelectorAll('.input-field');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Klavye dəstəyi tema dəyişdirmək üçün
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'T' || e.key === 't') {
+                toggleTheme();
+            }
+        });
+    </script>
+</body>
+</html>
