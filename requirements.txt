@@ -5,3 +5,5 @@ python-dotenv
 python-decouple
 pymysql
 cryptography
+dj_database_url
+psycopg2-binary
